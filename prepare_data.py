@@ -4,21 +4,21 @@ import random
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-# ---------------- المسارات ----------------
+# ---------------- paths ----------------
 dataset_dir = r"/home/doaa/DL/Data"
-output_dir = "processed_dataset"     # فولدر جديد يحوي train/val/test
+output_dir = "processed_dataset"     # train/val/test
 
 # ---------------- استخراج كل الأشخاص ----------------
 selected_people = [p for p in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, p))]
 print("Number of classes:", len(selected_people))
 
-# ---------------- إنشاء فولدرات Train/Val/Test ----------------
+# ---------------- make folders Train/Val/Test ----------------
 splits = ["train", "val", "test"]
 for split in splits:
     for person in selected_people:
         os.makedirs(os.path.join(output_dir, split, person), exist_ok=True)
 
-# ---------------- تقسيم الصور ----------------
+# ---------------- split image----------------
 for person in selected_people:
     person_path = os.path.join(dataset_dir, person)
     images = os.listdir(person_path)
@@ -44,9 +44,9 @@ for person in selected_people:
 print("✅ Dataset split completed successfully!")
 
 # ---------------- Augmentation و Transforms ----------------
-img_size = 160  # Resize للصور
+img_size = 160  # Resize to image 
 
-# Augmentation للتدريب
+# Augmentation 
 train_transform = transforms.Compose([
     transforms.Resize((img_size, img_size)),
     transforms.RandomHorizontalFlip(p=0.5),
@@ -56,7 +56,7 @@ train_transform = transforms.Compose([
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])
 
-# للفاليديشن و الاختبار: فقط resize + normalize
+#  resize + normalize
 test_transform = transforms.Compose([
     transforms.Resize((img_size, img_size)),
     transforms.ToTensor(),
